@@ -1,0 +1,29 @@
+{
+    "batch_id": "2026_W21",
+    "run_id": "deed68b6-4df2-42fc-a5d8-bf100fc91257",
+    "year": 2026,
+    "week_number": 21,
+    "generated_at": "2026-05-26 13:08:43.998776",
+    "raw_data_paths": {
+        "products": "Data/raw/products/products_2026_W21.csv",
+        "users": "Data/raw/users/users_2026_W21.csv",
+        "sessions": "Data/raw/sessions/sessions_2026_W21.csv",
+        "events": "Data/raw/events/events_2026_W21.csv",
+        "orders": "Data/raw/orders/orders_2026_W21.csv"
+    },
+    "consolidated_data_paths": {
+        "products": "Data/consolidated/consolidated_products/master_products.csv",
+        "users": "Data/consolidated/consolidated_users/master_users.csv",
+        "sessions": "Data/consolidated/consolidated_sessions/master_sessions.csv",
+        "events": "Data/consolidated/consolidated_events/master_events.csv",
+        "orders": "Data/consolidated/consolidated_orders/master_orders.csv"
+    },
+    "record_counts": {
+        "products": 200,
+        "users": 35000,
+        "sessions": 5136,
+        "events": 61388,
+        "orders": 4778
+    },
+    "status": "SUCCESS"
+}
