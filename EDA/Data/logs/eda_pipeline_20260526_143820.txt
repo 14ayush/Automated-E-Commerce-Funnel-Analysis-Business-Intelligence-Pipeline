@@ -1,0 +1,8 @@
+2026-05-26 14:38:20,613 - INFO - EDA Pipeline Started
+2026-05-26 14:42:15,541 - INFO - Loaded batch_id: 2026_W21
+2026-05-26 14:42:19,256 - INFO - EDA Pipeline Started
+2026-05-26 14:42:19,268 - INFO - Loaded batch_id: 2026_W21
+2026-05-26 14:42:19,283 - INFO - Loading datasets from metadata
+2026-05-26 14:47:39,250 - INFO - EDA Pipeline Started
+2026-05-26 14:47:39,264 - INFO - Loaded batch_id: 2026_W21
+2026-05-26 14:47:39,278 - INFO - Loading datasets from metadata
