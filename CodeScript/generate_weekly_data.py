@@ -10,12 +10,12 @@ fake=Faker()
 # now we are configuration of our requirements.
 
 Num_products=200
-Num_user=15000
+Num_user=25000
 
 # before generate the random data we must set the funnel like how much visit the website to how much order the product 
 
 FUNNEL_CONFIG= {
-    "homepage_visit":15000,
+    "homepage_visit":25000,
     "product_view_rate":0.70,
     "product_add_to_cart":0.45,
     "checkout_rate":0.60,
