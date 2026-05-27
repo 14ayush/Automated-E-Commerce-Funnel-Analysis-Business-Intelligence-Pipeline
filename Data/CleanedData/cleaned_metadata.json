@@ -1,0 +1,30 @@
+{
+    "cleaned_data_paths": {
+        "orders": {
+            "path": "Data\\CleanedData\\orders_clean_2026_W22.csv",
+            "updated_at": "2026-05-27 17:22:10",
+            "rows": 4778
+        },
+        "users": {
+            "path": "Data\\CleanedData\\users_clean_2026_W22.csv",
+            "updated_at": "2026-05-27 17:22:10",
+            "rows": 35000
+        },
+        "events": {
+            "path": "Data\\CleanedData\\events_clean_2026_W22.csv",
+            "updated_at": "2026-05-27 17:22:10",
+            "rows": 61388
+        },
+        "sessions": {
+            "path": "Data\\CleanedData\\sessions_clean_2026_W22.csv",
+            "updated_at": "2026-05-27 17:22:10",
+            "rows": 5136
+        },
+        "products": {
+            "path": "Data\\CleanedData\\products_clean_2026_W22.csv",
+            "updated_at": "2026-05-27 17:22:10",
+            "rows": 200
+        }
+    },
+    "last_updated": "2026-05-27 17:22:10"
+}

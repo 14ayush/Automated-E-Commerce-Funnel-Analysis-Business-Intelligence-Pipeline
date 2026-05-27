@@ -3,3 +3,33 @@
 2026-05-26 16:29:09,421 | WARNING | No files found in events
 2026-05-26 16:29:09,421 | WARNING | No files found in orders
 2026-05-26 16:29:09,421 | WARNING | No files found in products
+2026-05-27 17:28:20,865 | ERROR | (psycopg2.OperationalError) could not translate host name "db.sikxyojzdqhtldexqvlc.supabase.co" to address: Name or service not known
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-05-27 17:28:20,865 | ERROR | (psycopg2.OperationalError) could not translate host name "db.sikxyojzdqhtldexqvlc.supabase.co" to address: Name or service not known
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-05-27 17:28:20,904 | ERROR | (psycopg2.OperationalError) could not translate host name "db.sikxyojzdqhtldexqvlc.supabase.co" to address: Name or service not known
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-05-27 17:28:20,905 | ERROR | (psycopg2.OperationalError) could not translate host name "db.sikxyojzdqhtldexqvlc.supabase.co" to address: Name or service not known
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-05-27 17:28:20,924 | ERROR | (psycopg2.OperationalError) could not translate host name "db.sikxyojzdqhtldexqvlc.supabase.co" to address: Name or service not known
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-05-27 17:28:20,924 | ERROR | (psycopg2.OperationalError) could not translate host name "db.sikxyojzdqhtldexqvlc.supabase.co" to address: Name or service not known
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-05-27 17:28:20,969 | ERROR | (psycopg2.OperationalError) could not translate host name "db.sikxyojzdqhtldexqvlc.supabase.co" to address: Name or service not known
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-05-27 17:28:20,970 | ERROR | (psycopg2.OperationalError) could not translate host name "db.sikxyojzdqhtldexqvlc.supabase.co" to address: Name or service not known
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-05-27 17:28:21,080 | ERROR | (psycopg2.OperationalError) could not translate host name "db.sikxyojzdqhtldexqvlc.supabase.co" to address: Name or service not known
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-05-27 17:28:21,080 | ERROR | (psycopg2.OperationalError) could not translate host name "db.sikxyojzdqhtldexqvlc.supabase.co" to address: Name or service not known
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
