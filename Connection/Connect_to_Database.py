@@ -1,386 +1,469 @@
-import os
-import logging
-from pathlib import Path
-from datetime import datetime
-
 import pandas as pd
+import json
+from pathlib import Path
+from sqlalchemy import create_engine, text
 
-from dotenv import load_dotenv
+# ======================================================
+# DATABASE CONNECTION
+# ======================================================
 
-from sqlalchemy import (
-    create_engine,
-    text
+DATABASE_URL = (
+    "postgresql://neondb_owner:"
+    "npg_hagm3rYZw1Bu"
+    "@ep-broad-darkness-aqwha3yo-pooler."
+    "c-8.us-east-1.aws.neon.tech/"
+    "Ecommerce"
+    "?sslmode=require&channel_binding=require"
 )
 
-# ==========================================================
-# PROJECT ROOT
-# ==========================================================
+# ======================================================
+# CREATE ENGINE
+# ======================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-
-# ==========================================================
-# PATHS
-# ==========================================================
-
-CLEANED_DATA_PATH = (
-    PROJECT_ROOT /
-    "Data" /
-    "CleanedData"
-)
-
-CONNECTION_PATH = (
-    PROJECT_ROOT /
-    "Connection"
-)
-
-LOG_PATH = CONNECTION_PATH / "logs"
-
-METADATA_PATH = (
-    CONNECTION_PATH /
-    "metadata"
-)
-
-# ==========================================================
-# CREATE DIRECTORIES
-# ==========================================================
-
-LOG_PATH.mkdir(
-    parents=True,
-    exist_ok=True
-)
-
-METADATA_PATH.mkdir(
-    parents=True,
-    exist_ok=True
-)
-
-# ==========================================================
-# ENV VARIABLES
-# ==========================================================
-
-DATABASE_URL = os.getenv(
-    "SUPABASE_DB_URL"
-)
-
-print(DATABASE_URL)
+print("\nConnecting to Neon...\n")
 
 engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True
 )
 
-# ==========================================================
-# LOGGING
-# ==========================================================
+# ======================================================
+# PROJECT ROOT
+# ======================================================
 
-LOG_FILE = LOG_PATH / "database_load.log"
-
-ERROR_FILE = LOG_PATH / "error.log"
-
-logging.basicConfig(
-    filename=LOG_FILE,
-    level=logging.INFO,
-    format=(
-        "%(asctime)s | "
-        "%(levelname)s | "
-        "%(message)s"
-    )
+BASE_DIR = Path(
+    r"e:\Automated-E-Commerce-Funnel-Analysis-Business-Intelligence-Pipeline"
 )
 
-error_logger = logging.getLogger(
-    "error_logger"
-)
-
-error_handler = logging.FileHandler(
-    ERROR_FILE
-)
-
-error_logger.addHandler(error_handler)
-
-error_logger.setLevel(logging.ERROR)
-
-# ==========================================================
+# ======================================================
 # METADATA FILE
-# ==========================================================
+# ======================================================
 
-METADATA_FILE = (
-    METADATA_PATH /
-    "load_metadata.csv"
+METADATA_PATH = (
+    BASE_DIR
+    / "Data"
+    / "Metadata"
+    / "latest_metadata.json"
 )
 
-# ==========================================================
-# TABLE MAPPING
-# ==========================================================
+# ======================================================
+# LOAD METADATA
+# ======================================================
 
-TABLE_MAPPING = {
-    "users": "users_raw",
-    "sessions": "sessions_raw",
-    "events": "events_raw",
-    "orders": "orders_raw",
-    "products": "products_raw"
+with open(METADATA_PATH, "r") as f:
+
+    metadata = json.load(f)
+
+print("Metadata Loaded Successfully")
+
+# ======================================================
+# EXTRACT METADATA VALUES
+# ======================================================
+
+batch_id = metadata["batch_id"]
+
+run_id = metadata["run_id"]
+
+raw_paths = metadata["raw_data_paths"]
+
+record_counts = metadata["record_counts"]
+
+# ======================================================
+# CHECK IF BATCH ALREADY EXISTS
+# ======================================================
+
+print(f"\nChecking Batch: {batch_id}")
+
+batch_check_query = text("""
+
+SELECT COUNT(*)
+
+FROM metadata.pipeline_runs
+
+WHERE batch_id = :batch_id
+
+""")
+
+with engine.connect() as conn:
+
+    existing_batch = conn.execute(
+
+        batch_check_query,
+
+        {"batch_id": batch_id}
+
+    ).scalar()
+
+FORCE_RERUN = True
+
+# ======================================================
+# CHECK EXISTING BATCH
+# ======================================================
+
+if existing_batch > 0:
+
+    print(f"\nBatch Already Exists: {batch_id}")
+
+    if FORCE_RERUN:
+
+        print("\nFORCE RERUN ENABLED")
+
+        print("Cleaning Existing Batch Data...")
+
+        with engine.begin() as conn:
+
+            # ==========================================
+            # DELETE FACT TABLE DATA
+            # ==========================================
+
+            conn.execute(text("""
+
+                DELETE FROM analytics.fact_orders
+
+                WHERE batch_id = :batch_id
+
+            """), {"batch_id": batch_id})
+
+            conn.execute(text("""
+
+                DELETE FROM analytics.fact_events
+
+                WHERE batch_id = :batch_id
+
+            """), {"batch_id": batch_id})
+
+            # ==========================================
+            # DELETE STAGING DATA
+            # ==========================================
+
+            conn.execute(text("""
+
+                DELETE FROM staging.orders_stg
+
+                WHERE batch_id = :batch_id
+
+            """), {"batch_id": batch_id})
+
+            conn.execute(text("""
+
+                DELETE FROM staging.events_stg
+
+                WHERE batch_id = :batch_id
+
+            """), {"batch_id": batch_id})
+
+            conn.execute(text("""
+
+                DELETE FROM staging.sessions_stg
+
+                WHERE batch_id = :batch_id
+
+            """), {"batch_id": batch_id})
+
+            conn.execute(text("""
+
+                DELETE FROM staging.users_stg
+
+                WHERE batch_id = :batch_id
+
+            """), {"batch_id": batch_id})
+
+            conn.execute(text("""
+
+                DELETE FROM staging.products_stg
+
+                WHERE batch_id = :batch_id
+
+            """), {"batch_id": batch_id})
+
+            # ==========================================
+            # DELETE METADATA
+            # ==========================================
+
+            conn.execute(text("""
+
+                DELETE FROM metadata.file_tracker
+
+                WHERE batch_id = :batch_id
+
+            """), {"batch_id": batch_id})
+
+            conn.execute(text("""
+
+                DELETE FROM metadata.pipeline_runs
+
+                WHERE batch_id = :batch_id
+
+            """), {"batch_id": batch_id})
+
+        print("Previous Failed Batch Cleaned")
+
+    else:
+
+        raise Exception(
+            "Duplicate Batch Load Prevented"
+        )
+
+print(f"\nProceeding With Batch: {batch_id}")
+
+print(f"\nNew Batch Found: {batch_id}")
+
+# ======================================================
+# LOAD CSV FILES
+# ======================================================
+
+print("\nLoading CSV Files...\n")
+
+products_df = pd.read_csv(
+    BASE_DIR / raw_paths["products"]
+)
+
+users_df = pd.read_csv(
+    BASE_DIR / raw_paths["users"]
+)
+
+sessions_df = pd.read_csv(
+    BASE_DIR / raw_paths["sessions"]
+)
+
+events_df = pd.read_csv(
+    BASE_DIR / raw_paths["events"]
+)
+
+orders_df = pd.read_csv(
+    BASE_DIR / raw_paths["orders"]
+)
+
+print("All CSV Files Loaded Successfully")
+
+# ======================================================
+# INSERT PIPELINE RUN METADATA
+# ======================================================
+
+print("\nInserting Pipeline Metadata...\n")
+
+pipeline_run_df = pd.DataFrame([{
+
+    "run_id":
+        run_id,
+
+    "batch_id":
+        batch_id,
+
+    "year":
+        metadata["year"],
+
+    "week_number":
+        metadata["week_number"],
+
+    "pipeline_start":
+        metadata["generated_at"],
+
+    "pipeline_end":
+        metadata["generated_at"],
+
+    "status":
+        metadata["status"],
+
+    "total_records_loaded":
+        sum(record_counts.values())
+}])
+
+pipeline_run_df.to_sql(
+
+    name="pipeline_runs",
+
+    schema="metadata",
+
+    con=engine,
+
+    if_exists="append",
+
+    index=False,
+
+    method="multi",
+
+    chunksize=5000
+)
+
+print("Pipeline Metadata Inserted")
+
+# ======================================================
+# LOAD STAGING TABLES
+# ======================================================
+
+print("\nLoading Staging Tables...\n")
+
+table_mapping = {
+
+    "products_stg":
+        products_df,
+
+    "users_stg":
+        users_df,
+
+    "sessions_stg":
+        sessions_df,
+
+    "events_stg":
+        events_df,
+
+    "orders_stg":
+        orders_df
 }
 
-# ==========================================================
-# CREATE METADATA FILE
-# ==========================================================
+for table_name, dataframe in table_mapping.items():
 
-if not METADATA_FILE.exists():
+    print(f"Loading {table_name}...")
 
-    metadata_df = pd.DataFrame(columns=[
+    dataframe.to_sql(
 
-        "file_name",
-        "table_name",
-        "batch_id",
-        "rows_loaded",
-        "status",
-        "loaded_at"
+        name=table_name,
 
-    ])
+        schema="staging",
 
-    metadata_df.to_csv(
-        METADATA_FILE,
-        index=False
-    )
-
-# ==========================================================
-# READ METADATA
-# ==========================================================
-
-def read_metadata():
-
-    return pd.read_csv(
-        METADATA_FILE
-    )
-
-# ==========================================================
-# WRITE METADATA
-# ==========================================================
-
-def write_metadata(
-    file_name,
-    table_name,
-    batch_id,
-    rows_loaded,
-    status
-):
-
-    metadata = pd.DataFrame([{
-
-        "file_name": file_name,
-        "table_name": table_name,
-        "batch_id": batch_id,
-        "rows_loaded": rows_loaded,
-        "status": status,
-        "loaded_at": datetime.now()
-
-    }])
-
-    metadata.to_csv(
-        METADATA_FILE,
-        mode="a",
-        header=False,
-        index=False
-    )
-
-# ==========================================================
-# CHECK FILE ALREADY LOADED
-# ==========================================================
-
-def already_loaded(file_name):
-
-    metadata = read_metadata()
-
-    if metadata.empty:
-
-        return False
-
-    return (
-        file_name in
-        metadata["file_name"].values
-    )
-
-# ==========================================================
-# LOAD FILE
-# ==========================================================
-
-def load_file(file_path):
-
-    file_name = file_path.name
-
-    print(f"\nProcessing : {file_name}")
-
-    # ======================================================
-    # CHECK DUPLICATE
-    # ======================================================
-
-    if already_loaded(file_name):
-
-        logging.warning(
-            f"{file_name} already loaded"
-        )
-
-        print(
-            f"SKIPPED : {file_name}"
-        )
-
-        return
-
-    # ======================================================
-    # IDENTIFY TABLE
-    # ======================================================
-
-    table_key = None
-
-    lower_name = file_name.lower()
-
-    for key in TABLE_MAPPING.keys():
-
-        if key in lower_name:
-
-            table_key = key
-            break
-
-    if table_key is None:
-
-        logging.error(
-            f"Unknown file type : "
-            f"{file_name}"
-        )
-
-        return
-
-    table_name = TABLE_MAPPING[table_key]
-
-    # ======================================================
-    # READ CSV
-    # ======================================================
-
-    df = pd.read_csv(file_path)
-
-    if df.empty:
-
-        logging.warning(
-            f"{file_name} is empty"
-        )
-
-        return
-
-    # ======================================================
-    # BATCH CHECK
-    # ======================================================
-
-    if "batch_id" not in df.columns:
-
-        raise ValueError(
-            f"batch_id missing in "
-            f"{file_name}"
-        )
-
-    batch_id = (
-        df["batch_id"]
-        .astype(str)
-        .iloc[0]
-    )
-
-    rows_loaded = len(df)
-
-    # ======================================================
-    # LOAD TO DATABASE
-    # ======================================================
-
-    df.to_sql(
-        table_name,
         con=engine,
+
         if_exists="append",
+
         index=False,
+
         method="multi",
+
         chunksize=5000
     )
 
-    # ======================================================
-    # LOGGING
-    # ======================================================
+    print(f"{table_name} Loaded Successfully")
 
-    logging.info(
-        f"{file_name} loaded "
-        f"into {table_name}"
-    )
+# ======================================================
+# INSERT FILE TRACKER
+# ======================================================
 
-    write_metadata(
-        file_name=file_name,
-        table_name=table_name,
-        batch_id=batch_id,
-        rows_loaded=rows_loaded,
-        status="SUCCESS"
-    )
+print("\nUpdating File Tracker...\n")
 
-    print(
-        f"SUCCESS : {file_name}"
-    )
+file_tracker_records = []
 
-# ==========================================================
-# MAIN
-# ==========================================================
+for dataset_name, path in raw_paths.items():
 
-if __name__ == "__main__":
+    file_tracker_records.append({
 
-    try:
+        "run_id":
+            run_id,
 
-        print("=" * 60)
+        "batch_id":
+            batch_id,
 
-        print(
-            "SUPABASE DATA LOAD STARTED"
+        "dataset_name":
+            dataset_name,
+
+        "file_name":
+            Path(path).name,
+
+        "file_path":
+            path,
+
+        "record_count":
+            record_counts[dataset_name],
+
+        "file_type":
+            "RAW",
+
+        "ingestion_time":
+            metadata["generated_at"],
+
+        "is_latest":
+            True
+    })
+
+file_tracker_df = pd.DataFrame(
+    file_tracker_records
+)
+
+file_tracker_df.to_sql(
+
+    name="file_tracker",
+
+    schema="metadata",
+
+    con=engine,
+
+    if_exists="append",
+
+    index=False,
+
+    method="multi"
+)
+
+print("File Tracker Updated Successfully")
+
+# ======================================================
+# EXECUTE STORED PROCEDURES
+# ======================================================
+
+print("\nExecuting SQL Procedures...\n")
+
+with engine.begin() as conn:
+
+    conn.execute(
+        text(
+            "CALL analytics.sp_load_dimensions();"
         )
+    )
 
-        print("=" * 60)
+    conn.execute(
+        text(
+            "CALL analytics.sp_load_facts();"
+        )
+    )
 
-        # ==================================================
-        # GET ALL CSV FILES
-        # ==================================================
+    conn.execute(
+        text(
+            "CALL analytics.sp_refresh_weekly_summary();"
+        )
+    )
 
-        csv_files = sorted(
+print("SQL Procedures Executed Successfully")
 
-            CLEANED_DATA_PATH.glob(
-                "*.csv"
+# ======================================================
+# CLEAN STAGING TABLES
+# ======================================================
+
+print("\nCleaning Staging Tables...\n")
+
+staging_tables = [
+
+    "products_stg",
+    "users_stg",
+    "sessions_stg",
+    "events_stg",
+    "orders_stg"
+]
+
+with engine.begin() as conn:
+
+    for table in staging_tables:
+
+        conn.execute(
+
+            text(
+                f"TRUNCATE TABLE staging.{table};"
             )
-
         )
 
-        if len(csv_files) == 0:
+print("Staging Tables Cleaned Successfully")
 
-            print(
-                "\nNo CSV files found"
-            )
+# ======================================================
+# FINAL OUTPUT
+# ======================================================
 
-        # ==================================================
-        # PROCESS FILES
-        # ==================================================
+print("\n" + "=" * 60)
 
-        for file_path in csv_files:
+print("NEON ETL PIPELINE EXECUTED SUCCESSFULLY")
 
-            try:
+print("=" * 60)
 
-                load_file(file_path)
+print(f"Batch ID : {batch_id}")
 
-            except Exception as e:
+print(f"Run ID   : {run_id}")
 
-                logging.error(str(e))
-
-                error_logger.error(str(e))
-
-                print(
-                    f"FAILED : "
-                    f"{file_path.name}"
-                )
-
-        print("\nPipeline Completed")
-
-    except Exception as e:
-
-        logging.error(str(e))
-
-        error_logger.error(str(e))
-
-        print(
-            f"\nPipeline Failed : {e}"
-        )
+print("=" * 60)
