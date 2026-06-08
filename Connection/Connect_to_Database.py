@@ -46,9 +46,7 @@ METADATA_PATH = (
     / "latest_metadata.json"
 )
 
-# ======================================================
-# LOAD METADATA
-# ======================================================
+
 
 with open(METADATA_PATH, "r") as f:
 
@@ -56,9 +54,6 @@ with open(METADATA_PATH, "r") as f:
 
 print("Metadata Loaded Successfully")
 
-# ======================================================
-# EXTRACT METADATA VALUES
-# ======================================================
 
 batch_id = metadata["batch_id"]
 
