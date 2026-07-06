@@ -144,3 +144,43 @@
 2026-06-02 21:36:49,623 - INFO - Generating business insights
 2026-06-02 21:36:49,644 - INFO - EDA Pipeline Completed Successfully
 2026-06-02 21:36:49,644 - INFO - Batch processed: 2026_W22
+2026-06-08 20:52:29,816 - INFO - EDA Pipeline Started
+2026-06-08 20:52:29,889 - INFO - Loaded batch_id: 2026_W23
+2026-06-08 20:52:30,409 - INFO - Loading raw metadata
+2026-06-08 20:52:30,428 - INFO - Loading raw datasets
+2026-06-08 20:52:31,028 - INFO - Raw datasets loaded successfully
+2026-06-08 20:52:31,029 - INFO - Starting data cleaning
+2026-06-08 20:52:31,531 - INFO - Data cleaning completed
+2026-06-08 20:52:31,536 - INFO - Saving cleaned datasets
+2026-06-08 20:52:32,624 - INFO - Cleaned datasets saved successfully
+2026-06-08 20:52:32,831 - INFO - Metadata updated for orders
+2026-06-08 20:52:32,847 - INFO - Metadata updated for users
+2026-06-08 20:52:32,864 - INFO - Metadata updated for events
+2026-06-08 20:52:32,919 - INFO - Metadata updated for sessions
+2026-06-08 20:52:32,936 - INFO - Metadata updated for products
+2026-06-08 20:52:32,936 - INFO - Cleaned metadata updated successfully
+2026-06-08 20:52:32,936 - INFO - Loading latest cleaned datasets
+2026-06-08 20:52:33,618 - INFO - Latest cleaned datasets loaded successfully
+2026-06-08 20:52:33,669 - INFO - Running data quality check for Orders
+2026-06-08 20:52:33,724 - INFO - Orders - Shape: (5329, 15), Missing: 0, Duplicates: 0
+2026-06-08 20:52:33,725 - INFO - Running data quality check for Users
+2026-06-08 20:52:33,914 - INFO - Users - Shape: (35000, 10), Missing: 0, Duplicates: 0
+2026-06-08 20:52:33,915 - INFO - Running data quality check for Events
+2026-06-08 20:52:34,230 - INFO - Events - Shape: (68712, 9), Missing: 0, Duplicates: 0
+2026-06-08 20:52:34,230 - INFO - Running data quality check for Sessions
+2026-06-08 20:52:34,280 - INFO - Sessions - Shape: (5499, 12), Missing: 5, Duplicates: 0
+2026-06-08 20:52:34,280 - INFO - Running data quality check for Products
+2026-06-08 20:52:34,290 - INFO - Products - Shape: (200, 8), Missing: 0, Duplicates: 0
+2026-06-08 20:52:41,541 - INFO - Univariate Analysis - Revenue
+2026-06-08 20:52:48,312 - INFO - Event distribution analysis
+2026-06-08 20:52:48,771 - INFO - Bivariate analysis: category vs revenue
+2026-06-08 20:52:49,437 - INFO - City revenue analysis
+2026-06-08 20:52:49,811 - INFO - Event distribution analysis
+2026-06-08 20:52:50,105 - INFO - Funnel analysis started
+2026-06-08 20:52:50,163 - INFO - Time series analysis
+2026-06-08 20:52:50,584 - INFO - Cohort analysis
+2026-06-08 20:52:50,678 - INFO - Outlier detection started
+2026-06-08 20:52:50,690 - INFO - Outliers detected: 82
+2026-06-08 20:52:50,710 - INFO - Generating business insights
+2026-06-08 20:52:50,751 - INFO - EDA Pipeline Completed Successfully
+2026-06-08 20:52:50,751 - INFO - Batch processed: 2026_W23

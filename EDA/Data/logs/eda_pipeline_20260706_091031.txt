@@ -1,0 +1,40 @@
+2026-07-06 09:10:31,547 - INFO - EDA Pipeline Started
+2026-07-06 09:10:31,577 - INFO - Loaded batch_id: 2026_W27
+2026-07-06 09:10:31,848 - INFO - Loading raw metadata
+2026-07-06 09:10:31,849 - INFO - Loading raw datasets
+2026-07-06 09:10:32,162 - INFO - Raw datasets loaded successfully
+2026-07-06 09:10:32,163 - INFO - Starting data cleaning
+2026-07-06 09:10:32,327 - INFO - Data cleaning completed
+2026-07-06 09:10:32,328 - INFO - Saving cleaned datasets
+2026-07-06 09:10:32,863 - INFO - Cleaned datasets saved successfully
+2026-07-06 09:10:32,876 - INFO - Metadata updated for orders
+2026-07-06 09:10:32,886 - INFO - Metadata updated for users
+2026-07-06 09:10:32,900 - INFO - Metadata updated for events
+2026-07-06 09:10:32,914 - INFO - Metadata updated for sessions
+2026-07-06 09:10:32,918 - INFO - Metadata updated for products
+2026-07-06 09:10:32,918 - INFO - Cleaned metadata updated successfully
+2026-07-06 09:10:32,918 - INFO - Loading latest cleaned datasets
+2026-07-06 09:10:33,238 - INFO - Latest cleaned datasets loaded successfully
+2026-07-06 09:10:33,270 - INFO - Running data quality check for Orders
+2026-07-06 09:10:33,300 - INFO - Orders - Shape: (4227, 15), Missing: 0, Duplicates: 0
+2026-07-06 09:10:33,300 - INFO - Running data quality check for Users
+2026-07-06 09:10:33,400 - INFO - Users - Shape: (35000, 10), Missing: 0, Duplicates: 0
+2026-07-06 09:10:33,400 - INFO - Running data quality check for Events
+2026-07-06 09:10:33,580 - INFO - Events - Shape: (62166, 9), Missing: 0, Duplicates: 0
+2026-07-06 09:10:33,580 - INFO - Running data quality check for Sessions
+2026-07-06 09:10:33,597 - INFO - Sessions - Shape: (5038, 12), Missing: 7, Duplicates: 0
+2026-07-06 09:10:33,597 - INFO - Running data quality check for Products
+2026-07-06 09:10:33,611 - INFO - Products - Shape: (200, 8), Missing: 0, Duplicates: 0
+2026-07-06 09:10:34,165 - INFO - Univariate Analysis - Revenue
+2026-07-06 09:10:34,629 - INFO - Event distribution analysis
+2026-07-06 09:10:34,818 - INFO - Bivariate analysis: category vs revenue
+2026-07-06 09:10:34,972 - INFO - City revenue analysis
+2026-07-06 09:10:35,190 - INFO - Event distribution analysis
+2026-07-06 09:10:35,325 - INFO - Funnel analysis started
+2026-07-06 09:10:35,359 - INFO - Time series analysis
+2026-07-06 09:10:35,588 - INFO - Cohort analysis
+2026-07-06 09:10:35,650 - INFO - Outlier detection started
+2026-07-06 09:10:35,655 - INFO - Outliers detected: 58
+2026-07-06 09:10:35,669 - INFO - Generating business insights
+2026-07-06 09:10:35,710 - INFO - EDA Pipeline Completed Successfully
+2026-07-06 09:10:35,710 - INFO - Batch processed: 2026_W27
